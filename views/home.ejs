@@ -18,9 +18,8 @@
         <script src="/js/jquery-ui.min.js"></script>
         <script>
             $(function(){
-                $(document).tooltip({
-                    position:{at: "center right"}
-                });
+                // default: { my: "left top+15", at: "left bottom", collision: "flipfit" }
+                $(document).tooltip();
             });
         </script>
         <script type="text/javascript">document.documentElement.style.setProperty("--gridRowNum", "<%= gridRowNum %>");</script>
