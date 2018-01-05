@@ -16,7 +16,7 @@ function cwbAQI(areaAndStationName){
             },
             success: function(result) {
                 if(result) {
-                    if(result.data.AQI){
+                    if(result.data){
                         let hour = result.data.Time.split(" ")[1].split(":")[0];
                         let amOrpm = hour < 12? " 上午" : " 下午";
                         let getTime = result.data.Time.replace(/-/g,"/").replace(" ",amOrpm)
@@ -27,7 +27,8 @@ function cwbAQI(areaAndStationName){
                         pm25 = pm25 === "ND" ? "未檢出" : pm25;
                         pm25 = pm25 === "" ? "設備維護" : pm25;
                         aqi = aqi === "" ? "設備維護" : aqi;
-
+                        console.log(siteName)
+                        console.log(aqi)
                         element.querySelector('p[name=info]').innerHTML = 
                         "<div>監測站類型:" + result.data.MonobjName + "</div>" +
                         "<div class = \"AQIValueDiv AQIValueDiv_" + siteName + "\">AQI指數:" + aqi + "</div>" +
@@ -35,7 +36,9 @@ function cwbAQI(areaAndStationName){
                         "<div>Update：" + getTime + "</div>";
 
                         // 檢查AQI
-                        if(0 <= aqi && aqi <= 50){
+                        if(aqi === "設備維護"){
+                            document.getElementsByClassName("AQIValueDiv_"+siteName)[0].style.backgroundColor = "#aaa";
+                        }else if(0 <= aqi && aqi <= 50){
                             document.getElementsByClassName("AQIValueDiv_"+siteName)[0].style.backgroundColor = "#00e800";
                         }else if(51 <= aqi && aqi <= 100){
                             document.getElementsByClassName("AQIValueDiv_"+siteName)[0].style.backgroundColor = "#ffff00";
@@ -50,8 +53,8 @@ function cwbAQI(areaAndStationName){
                         }
 
                         // 檢查pm2.5
-                        if(pm25 === "ND"){
-                            document.getElementsByClassName("PM25ValueDiv_"+siteName)[0].style.backgroundColor = "none";
+                        if(pm25 === "未檢出" || pm25 === "設備維護"){
+                            document.getElementsByClassName("PM25ValueDiv_"+siteName)[0].style.backgroundColor = "#aaa";
                         }else if(0 <= pm25 && pm25 <= 11){
                             document.getElementsByClassName("PM25ValueDiv_"+siteName)[0].style.backgroundColor = "lightgreen";
                         }else if(12 <= pm25 && pm25 <= 23){
@@ -70,15 +73,13 @@ function cwbAQI(areaAndStationName){
                             document.getElementsByClassName("PM25ValueDiv_"+siteName)[0].style.backgroundColor = "red";
                         }else if(65 <= pm25 && pm25 <= 70){
                             document.getElementsByClassName("PM25ValueDiv_"+siteName)[0].style.backgroundColor = "brown";
-                        }else if(pm25 > 71){
+                        }else if(pm25 >= 71){
                             document.getElementsByClassName("PM25ValueDiv_"+siteName)[0].style.backgroundColor = "#FF00FF";
                         }
-                        return 
-
+                        return
                     }
-                    return element.querySelector('p[name=info]').innerHTML = "設備維護中";
+                    return element.querySelector('p[name=info]').innerHTML = "no data :(";
                 }
-                
             }
         });
     }
